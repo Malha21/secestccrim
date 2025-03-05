@@ -3,20 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sqlalchemy import create_engine, text
-import time
 import logging
 import os
 import sys
 
 # Executa o Streamlit manualmente ao iniciar o executável
 if getattr(sys, 'frozen', False):
-    # Se estiver rodando como executável PyInstaller
     os.system(f'streamlit run {sys.executable}')
-else:
-    # Se estiver rodando normalmente como script Python
-    import streamlit as st
-    st.write("🚀 Aplicação iniciando...")
-
 
 # Opcional: reduz a verbosidade dos logs do Streamlit
 logging.getLogger("streamlit").setLevel(logging.ERROR)
@@ -93,7 +86,6 @@ def gerar_graficos():
     
     # Exibe a figura na aplicação Streamlit
     st.pyplot(fig)
-    st.write("Gerou gráficos.")
 
 def listar_laudos_em_tramitacao_aberta():
     """
@@ -118,10 +110,7 @@ def listar_laudos_em_tramitacao_aberta():
             df_abertos['data_recebimento'] = df_abertos['data_recebimento'].dt.strftime("%d/%m/%Y %H:%M:%S")
         st.subheader("Laudos - Tramitação")
         st.dataframe(df_abertos)
-        st.write("Listou laudos com tramitação em aberto.")
 
 if __name__ == '__main__':
     gerar_graficos()
     listar_laudos_em_tramitacao_aberta()
-
-  
