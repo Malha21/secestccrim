@@ -116,7 +116,7 @@ def listar_laudos_em_tramitacao_aberta():
         if 'data_recebimento' in df_abertos.columns:
             df_abertos['data_recebimento'] = pd.to_datetime(df_abertos['data_recebimento'], errors='coerce')
             df_abertos['data_recebimento'] = df_abertos['data_recebimento'].dt.strftime("%d/%m/%Y %H:%M:%S")
-        st.subheader("Laudos - Tramitação em Aberto")
+        st.subheader("Laudos - Tramitação")
         st.dataframe(df_abertos)
         st.write("Listou laudos com tramitação em aberto.")
 
