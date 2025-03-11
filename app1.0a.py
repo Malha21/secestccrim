@@ -33,53 +33,52 @@ def gerar_graficos():
         df['ano'] = df['ano'].astype(int)
     except ValueError:
         st.error("⚠️ A coluna 'ano' possui valores não numéricos.")
+        return
 
-    # Cria uma figura com 6 subplots com tamanho aumentado (24x12 polegadas)
+    # Cria uma figura com 6 subplots (2x3) e tamanho 24x12
     fig, axes = plt.subplots(2, 3, figsize=(24, 12))
     fig.suptitle("Seção de Estatísticas - Balística - SecTec/Ccrim", fontsize=20, fontweight='bold')
-    axes = axes.flatten()
+    axes = axes.flatten()  # Transforma em array 1D
 
-    # Gráfico 1: Laudos por OPM (Gráfico de Pizza)
-    opm_counts = df['opm'].value_counts()
-    axes[0].pie(opm_counts, labels=opm_counts.index, autopct='%1.1f%%', startangle=140)
-    axes[0].set_title('Laudos por OPM')
-
-    # Gráfico 2: Laudos por Ano (Gráfico de Linha)
+    # Gráfico 1: Laudos por Ano (Line plot) - agora em axes[0]
     ano_counts = df.groupby('ano').size().sort_index()
-    axes[1].plot(ano_counts.index, ano_counts.values, marker='o', linestyle='-')
-    axes[1].set_title('Laudos por Ano')
-    axes[1].set_xlabel('Ano')
-    axes[1].set_ylabel('Quantidade')
+    axes[0].plot(ano_counts.index, ano_counts.values, marker='o', linestyle='-')
+    axes[0].set_title('Laudos por Ano')
+    axes[0].set_xlabel('Ano')
+    axes[0].set_ylabel('Quantidade')
 
-    # Gráfico 3: Laudos por Perito (Barra Horizontal)
+    # Gráfico 2: Laudos por Perito (Barra Horizontal) - axes[1]
     perito_counts = df['perito_relator'].value_counts()
-    axes[2].barh(perito_counts.index, perito_counts.values)
-    axes[2].set_title('Laudos por Perito')
-    axes[2].set_xlabel('Quantidade')
-    axes[2].set_ylabel('Perito')
+    axes[1].barh(perito_counts.index, perito_counts.values)
+    axes[1].set_title('Laudos por Perito')
+    axes[1].set_xlabel('Quantidade')
+    axes[1].set_ylabel('Perito')
 
-    # Gráfico 4: Laudos por Marca (Countplot com Seaborn)
-    sns.countplot(ax=axes[3], data=df, x='marca_arma', order=df['marca_arma'].value_counts().index)
-    axes[3].set_title('Laudos por Marca')
-    axes[3].set_xlabel('Marca')
-    axes[3].set_ylabel('Quantidade')
-    for label in axes[3].get_xticklabels():
+    # Gráfico 3: Laudos por Marca (Countplot) - axes[2]
+    sns.countplot(ax=axes[2], data=df, x='marca_arma', order=df['marca_arma'].value_counts().index)
+    axes[2].set_title('Laudos por Marca')
+    axes[2].set_xlabel('Marca')
+    axes[2].set_ylabel('Quantidade')
+    for label in axes[2].get_xticklabels():
         label.set_rotation(45)
         label.set_ha('right')
 
-    # Gráfico 5: Laudos por Modelo (Barra Horizontal)
+    # Gráfico 4: Laudos por Modelo (Barra Horizontal) - axes[3]
     modelo_counts = df['modelo_arma'].value_counts()
-    axes[4].barh(modelo_counts.index, modelo_counts.values)
-    axes[4].set_title('Laudos por Modelo')
-    axes[4].set_xlabel('Quantidade')
-    axes[4].set_ylabel('Modelo')
+    axes[3].barh(modelo_counts.index, modelo_counts.values)
+    axes[3].set_title('Laudos por Modelo')
+    axes[3].set_xlabel('Quantidade')
+    axes[3].set_ylabel('Modelo')
 
-    # Gráfico 6: Laudos por Exame (Gráfico Donut)
+    # Gráfico 5: Laudos por Exame (Barra Horizontal) - axes[4]
     exame_counts = df['descricao_exame'].value_counts()
-    wedges, texts, autotexts = axes[5].pie(exame_counts, labels=exame_counts.index, autopct='%1.1f%%', startangle=90)
-    centre_circle = plt.Circle((0, 0), 0.70, fc='white')
-    axes[5].add_artist(centre_circle)
-    axes[5].set_title('Laudos por Exame')
+    axes[4].barh(exame_counts.index, exame_counts.values)
+    axes[4].set_title('Laudos por Exame')
+    axes[4].set_xlabel('Quantidade')
+    axes[4].set_ylabel('Descrição')
+
+    # Remove o último subplot (axes[5]) para não ficar vazio
+    fig.delaxes(axes[5])
 
     sns.despine()
     plt.tight_layout(rect=[0, 0, 1, 0.95])
@@ -114,3 +113,4 @@ def listar_laudos_em_tramitacao_aberta():
 if __name__ == '__main__':
     gerar_graficos()
     listar_laudos_em_tramitacao_aberta()
+
